@@ -1,0 +1,17 @@
+#!/bin/bash
+if [ ! -x /usr/bin/apt-show-versions ] 
+then
+  echo 'To use this script, please run this command first:'
+  echo '  sudo apt install apt-show-versions'
+  exit 1
+fi
+FOREIGN=$(tempfile --prefix=ood_)
+/usr/bin/apt-show-versions | grep -Ev ' (uptodate|not installed)$' > $FOREIGN
+if [ -e $FOREIGN ]
+then
+  echo 'Note: No packages / package versions of unknown origin were found' >&2
+else
+  echo 'Packages / package versions which are installed but of unknown origin:'
+  cat $FOREIGN
+fi
+rm $FOREIGN
