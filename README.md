@@ -25,4 +25,4 @@ wget -q https://raw.githubusercontent.com/tomreyn/scripts/master/foreign_package
 
 **Contact**
 
-You can contact me by e-mail: tomreyn at mmegaglest d0t org
+You can contact me by e-mail: tomreyn at megaglest d0t org
