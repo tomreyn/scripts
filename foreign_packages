@@ -1,17 +1,23 @@
 #!/bin/bash
-if [ ! -x /usr/bin/apt-show-versions ] 
+if [[ $(/usr/bin/id -u) -ne 0 ]]
+then
+  echo 'Please run this script as the "root" user (uid 0).'
+  exit 1
+fi
+if [[ ! -x /usr/bin/apt-show-versions ]]
 then
   echo 'To use this script, please run this command first:'
   echo '  sudo apt install apt-show-versions'
-  exit 1
+  exit 2
 fi
-FOREIGN=$(tempfile --prefix=ood_)
+/usr/bin/apt-get update --quiet=2 --download-only
+FOREIGN=$(tempfile --prefix=fopa_)
 /usr/bin/apt-show-versions | grep -Ev ' (uptodate|not installed)$' > $FOREIGN
 if [ -e $FOREIGN ]
 then
-  echo 'Note: No packages / package versions of unknown origin were found' >&2
-else
   echo 'Packages / package versions which are installed but of unknown origin:'
   cat $FOREIGN
+else
+  echo 'Note: No packages / package versions of unknown origin were found' >&2
 fi
 rm $FOREIGN
