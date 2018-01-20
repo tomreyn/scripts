@@ -1,8 +1,9 @@
 **Scripts**
 
-* kernel_mainline_update
+* wget_kernel_mainline.sh
 
 A shell script for Ubuntu to download .deb packaged mainline kernel images. This is written by TJ, thanks a lot for sharing!
+Source: http://iam.tj/projects/ubuntu/wget_kernel_mainline.sh
 
 
 * foreign_packages
