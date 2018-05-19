@@ -32,6 +32,10 @@ rm ./foreign_packages
 sudo apt purge -qq apt-show-versions
 ```
 
+* ubuntu_archivemirrors_https
+
+A simplistic (no error handling) script to determine Ubuntu archive mirrors supporting HTTPS
+
 **Contact**
 
 You can contact me by e-mail: tomreyn at megaglest d0t org

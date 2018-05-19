@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Simplistic, non error handling script to determine Ubuntu archive mirrors supporting HTTPS
+
+curl https://launchpad.net/ubuntu/+archivemirrors > /tmp/archivemirrors.html
+sed -e '1,/<table class="listing" id="mirrors_list">/d' /tmp/archivemirrors.html | sed -e '/<\/table>/,$d' | grep -F '<a href="http://' | cut -d '"' -f2 | sed 's/^http:/https:/g' > /tmp/archivemirrors_https.lst
+while read URL; do curl --silent --head --connect-timeout 3 --max-time 8 $URL/ls-lR.gz >/dev/null && echo $URL; done </tmp/archivemirrors_https.lst
