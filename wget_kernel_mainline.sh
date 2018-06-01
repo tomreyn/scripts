@@ -7,19 +7,27 @@ FILE_LIST="mainline-kernel.list"
 DOWNLOAD_ONLY=false
 SHASUM=sha1sum
 CHECKSUM_BLOCK="Checksums-Sha1:"
+ERROR_LOG="/tmp/wget_kernel_mainline.log"
+GPG_LOG="/tmp/wget_kernel_mainline.gpg.log"
+CHECKSUMS_LOG="/tmp/wget_kernel_mainline.sums.log"
+
 help()
 {
   cat <<EOT
-Copyright 2014-2017 Tj <ubuntu@iam.tj>
+Copyright 2014-2018 Tj <ubuntu@iam.tj>
 Licensed on the terms of the GNU General Public License version 3
  
 This script automates the fetching of the Ubuntu mainline kernel build packages
-If run with no options it will identify, download, and install the latest build
-(which could be a Release Candidate (RC) from
-  http://kernel.ubuntu.com/~kernel-ppa/mainline
+If run with no options it will identify, download, verify checksum signatures.
+and install the latest build - which could be a Release Candidate (RC) - from
+
+    http://kernel.ubuntu.com/~kernel-ppa/mainline
+
 If passed a version number as its only argument that version will be fetched and 
 installed. e.g:
- wget_kernel_mainline.sh v4.13
+
+wget_kernel_mainline.sh v4.13
+
 Options:
   -d download only
   -h this help
@@ -56,7 +64,7 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     *)
-      V="$V $1"
+      V="$1"
       shift
       ;;
   esac
@@ -70,6 +78,8 @@ if [ -z "$V" ]; then
 else
   if ! wget -O - "$B/$V" 2>/dev/null >&2; then
     echo "error: Cannot find version $V in the Ubuntu mainline kernel archive" >&2
+    echo "  URL: $B/$V" >&2
+    cat $ERROR_LOG
     exit 1
   fi
 fi
@@ -99,11 +109,39 @@ wget -nc "$B/$V/CHECKSUMS"
 wget -nc "$B/$V/CHECKSUMS.gpg"
 echo
 echo "Verifying the CHECKSUM signature"
-if ! gpg2 --no-default-keyring --keyring /etc/apt/trusted.gpg --verify CHECKSUMS.gpg CHECKSUMS; then
-  echo "ERROR: failed to verify the CHECKSUM signature"
-  echo "  do you need to add the package signing key to the system keyring?"
-  echo "    sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com <KEYID>"
-  RET=1
+if ! which gpg2 >/dev/null; then
+  echo "ERROR: cannot find gpg2, do you need to install the package 'gnupg2' ?"
+  echo "ERROR: cannot verify signature of CHECKSUM file"
+  RET=3
+else
+  gpg2 --no-default-keyring --keyring /etc/apt/trusted.gpg --verify CHECKSUMS.gpg CHECKSUMS |& tee $GPG_LOG
+  if grep -q "gpg: Can't check signature: No public key" $GPG_LOG; then
+    MISSING_KEY=$(sed -n 's/gpg: Signature made.*using.*key ID \(.*\)$/\1/p' $GPG_LOG)
+    echo
+    echo "ERROR: failed to verify the CHECKSUM signature - key ${MISSING_KEY} not in local package manager keyring"
+    echo
+    echo "Please examine and verify your trust of this key now. Fetching the key details so you can examine it:"
+    echo
+    curl "http://keyserver.ubuntu.com/pks/lookup?op=vindex&search=0x${MISSING_KEY}&fingerprint=on" 2>/dev/null | sed -r -e 's,(<[/]*[^>]+>|\&[^;]+;),,g' -ne '/^pub/,$ p'
+    echo
+    read -p "    Would you like to add key ID ${MISSING_KEY} automatically (yes/NO) ? " a
+    if [ ${#a} -gt 0 -a "${a:0:1}" = "y" -o ${#a} -gt 0 -a "${a:0:1}" = "Y" ]; then
+      echo "Installing key ID $MISSING_KEY"
+      sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-keys "$MISSING_KEY"
+      if [ $? -ne 0 ]; then
+        echo "ERROR: failed to add key $MISSING_KEY to the package manager's keyring"
+        exit 2
+      else
+        echo "Key $MISSING_KEY successfully added to package manager's keyring"
+      fi
+    else
+      echo
+      echo "To add key ID ${MISSING_KEY} later here is the command required to do it manually:"
+      echo "    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-keys $MISSING_KEY"
+      RET=1
+      exit $RET
+    fi
+  fi
 fi
 
 TMP_CHECKSUMS="/tmp/CHECKSUMS_${RANDOM}"
@@ -128,12 +166,23 @@ done < "CHECKSUMS"
 
 if [ -f "$TMP_CHECKSUMS" ]; then
   echo "Verifying $CHECKSUM_BLOCK"
-  if ! $SHASUM -c $TMP_CHECKSUMS; then
+  $SHASUM -c $TMP_CHECKSUMS | tee $CHECKSUMS_LOG
+  if grep -q 'FAILED' "$CHECKSUMS_LOG" ; then
     echo "Error: Checksums did not verify"
-    rm $TMP_CHECKSUMS
+    while read pkg status; do
+      if [ "$status" = "FAILED" ]; then
+        echo "  deleting ${pkg%:*}"
+        rm ${pkg%:*}
+      fi
+    done < $CHECKSUMS_LOG
+    echo "  Failed files have been deleted; please re-run the command to download good files"
     RET=2
   fi
+  rm $TMP_CHECKSUMS
 fi  
+
+echo "Downloaded to directory $PWD/"
+
 popd >/dev/null
 
 if ! $DOWNLOAD_ONLY; then
