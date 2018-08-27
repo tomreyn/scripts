@@ -1,12 +1,14 @@
-**Scripts**
+# Script collection
 
-* wget_kernel_mainline.sh
+These are just a couple scripts which may seem worth retaining.
+
+## wget_kernel_mainline.sh
 
 A shell script for Ubuntu to download .deb packaged mainline kernel images. This is written by TJ, thanks a lot for sharing!
 Source: http://iam.tj/projects/ubuntu/wget_kernel_mainline.sh
 
 
-* foreign_packages
+## foreign_packages
 
 A shell script for Debian + Ubuntu to list packages which have become untracked. This can occur if you have installed packages from an APT repository and removed this APT repository later on - but not the packages. Another scenario where this can occur is that you installed a Debian package (.deb file) directly using the 'dpkg' command.
 
@@ -32,10 +34,10 @@ rm ./foreign_packages
 sudo apt purge -qq apt-show-versions
 ```
 
-* ubuntu_archivemirrors_https
+## ubuntu_archivemirrors_https
 
 A simplistic (no error handling) script to determine Ubuntu archive mirrors supporting HTTPS
 
-**Contact**
+# Contact
 
 You can contact me by e-mail: tomreyn at megaglest d0t org
