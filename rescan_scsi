@@ -1,0 +1,7 @@
+#!/bin/bash
+for hostid in $( ls -d /sys/class/scsi_host/host* | sed -E 's;.*/host([0-9]+)$;\1;' | sort -n)
+do
+  echo "[ Rescanning SCSI host $hostid ]"
+  echo "- - -" | sudo tee -a /sys/class/scsi_host/host${hostid}/scan 1>/dev/null
+  echo
+done

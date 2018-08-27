@@ -2,11 +2,9 @@
 
 These are just a couple scripts which may seem worth retaining.
 
-## wget_kernel_mainline.sh
+## ips_for_fqdn
 
-A shell script for Ubuntu to download .deb packaged mainline kernel images. This is written by TJ, thanks a lot for sharing!
-Source: http://iam.tj/projects/ubuntu/wget_kernel_mainline.sh
-
+A shell script to list information on a given fully qualified domain name, such as its authoritative nameservers and IP addresses it resolves to.
 
 ## foreign_packages
 
@@ -34,9 +32,19 @@ rm ./foreign_packages
 sudo apt purge -qq apt-show-versions
 ```
 
+## rescan_scsi
+
+(Re-)scan the entire SCSI bus to detect device changes. Can be useful to warm-plug storage devices.
+
 ## ubuntu_archivemirrors_https
 
 A simplistic (no error handling) script to determine Ubuntu archive mirrors supporting HTTPS
+
+## wget_kernel_mainline.sh
+
+A shell script for Ubuntu to download .deb packaged mainline kernel images. This is written by TJ, thanks a lot for sharing!
+Source: http://iam.tj/projects/ubuntu/wget_kernel_mainline.sh
+
 
 # Contact
 

@@ -1,0 +1,73 @@
+#!/bin/bash
+FQDN=$1
+if [ "$FQDN" == '' ]; then echo 'Pass FQDN along.' >&2; exit 1; fi
+
+DOMAINNAME=$(
+  echo $FQDN | sed 's/\.$//' | awk -F. '{print $(NF-1)"."$(NF)}'
+)
+
+NAMESERVERS=$(
+  dig NS $DOMAINNAME +short | sed 's/\.$//' | sort | uniq
+)
+
+CNAMES=$(
+  for NAMESERVER in $NAMESERVERS
+  do
+    dig CNAME $FQDN @${NAMESERVER} +short
+  done | sort | uniq
+)
+
+IPS_A=$(
+  for NAMESERVER in $NAMESERVERS
+  do
+    dig A $FQDN @${NAMESERVER} +short
+  done | sort | uniq
+)
+
+IPS_CNAME=$(
+  for NAMESERVER in $NAMESERVERS
+  do
+    dig A $CNAME @${NAMESERVER} +short
+  done | sort | uniq
+)
+
+IPS=$(
+  (echo $IPS_A; echo $IPS_CNAME) | sort | uniq
+)
+
+echo 'FQDN:'
+echo $FQDN
+echo
+echo 'DOMAINNAME:'
+echo $DOMAINNAME
+echo
+echo 'NAMESERVERS:'
+for NAMESERVER in $NAMESERVERS
+do
+  echo $NAMESERVER
+done
+echo
+echo 'CNAMES:'
+for CNAME in $CNAMES
+do
+  echo $CNAME
+done
+echo
+echo 'IPS_A:'
+for IP_A in $IPS_A
+do
+  echo $IP_A
+done
+echo
+echo 'IPS_CNAME:'
+for IP_CNAME in $IPS_CNAME
+do
+  echo $IP_CNAME
+done
+echo
+echo 'IPS:'
+for IP in $IPS
+do
+  echo $IP
+done
+echo
