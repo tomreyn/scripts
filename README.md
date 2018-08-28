@@ -2,6 +2,12 @@
 
 These are just a couple scripts which may seem worth retaining.
 
+## align_check
+
+A shell script to check partition alignment on a given partitioned block device (such as /dev/sda).
+
+Requires sudo, parted
+
 ## ips_for_fqdn
 
 A shell script to list information on a given fully qualified domain name, such as its authoritative nameservers and IP addresses it resolves to.
