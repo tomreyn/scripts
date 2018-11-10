@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+# For the given Ubuntu release codename (e.g. 'bionic'), report whether the given CVEs are still to be handled
+#
+# WARNING:
+# This is very crude and will likely return incorrect or misleading results, don't rely on it for anything serious.
+
+usage() {
+  SCRIPTNAME=$(basename $0)
+  echo 'Usage:'
+  echo "$SCRIPTNAME [<CODENAME>] <CVE ID #1> [<CVE ID #2> <..>]"
+  echo
+  echo 'Example:'
+  echo "$SCRIPTNAME bionic CVE-2017-5753 CVE-2018-3639 CVE-2018-3620"
+}
+
+case $1 in
+  -h|--help ) :
+    usage
+    exit 0
+    ;;
+  precise|trusty|xenial|bionic|carmic|disco ) :
+    RELEASE=$1
+    shift
+    ;;
+  '' ) :
+    echo 'ERROR: Please provide a valid codename as first argument (e.g. "bionic").' >&2
+    usage
+    exit 1
+    ;;
+  * ) :
+    RELEASE=bionic
+    ;;
+esac
+if [[ "$1" == '' ]]
+then
+  echo 'ERROR: Please provide a list of CVE IDs to check (e.g. "CVE-2018-1234").' >&2
+  usage
+  exit 2
+fi
+CVEIDS=$@
+
+for CVEID in $CVEIDS
+do
+  echo "# $CVEID"
+  curl -s https://git.launchpad.net/ubuntu-cve-tracker/plain/active/$CVEID | grep -E '^'"$RELEASE"'_.* (needs-triage|needed|pending)$'
+done

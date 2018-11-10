@@ -8,6 +8,10 @@ A shell script to check partition alignment on a given partitioned block device 
 
 Requires sudo, parted
 
+## cve_states
+
+A shell script to report whether a given list of CVE IDs need yet to be handled (for the given Ubuntu release codename) by the Ubuntu security team. Crude and likely broken, don't rely on it.
+
 ## ips_for_fqdn
 
 A shell script to list information on a given fully qualified domain name, such as its authoritative nameservers and IP addresses it resolves to.
