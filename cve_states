@@ -19,7 +19,7 @@ case $1 in
     usage
     exit 0
     ;;
-  precise|trusty|xenial|bionic|carmic|disco ) :
+  precise|trusty|xenial|bionic|cosmic|disco ) :
     RELEASE=$1
     shift
     ;;
