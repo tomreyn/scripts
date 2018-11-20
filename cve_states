@@ -15,7 +15,7 @@ usage() {
 }
 
 case $1 in
-  -h|--help ) :
+  -h|--help )
     usage
     exit 0
     ;;
@@ -23,12 +23,12 @@ case $1 in
     RELEASE=$1
     shift
     ;;
-  '' ) :
+  '' )
     echo 'ERROR: Please provide a valid codename as first argument (e.g. "bionic").' >&2
     usage
     exit 1
     ;;
-  * ) :
+  * )
     RELEASE=bionic
     ;;
 esac
