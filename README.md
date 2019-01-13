@@ -1,6 +1,6 @@
 # Script collection
 
-These are just a couple scripts which may seem worth retaining.
+These are just a few scripts which may seem worth retaining.
 
 ## align_check
 
@@ -18,29 +18,44 @@ A shell script to list information on a given fully qualified domain name, such 
 
 ## foreign_packages
 
-A shell script for Debian + Ubuntu to list packages which have become untracked. This can occur if you have installed packages from an APT repository and removed this APT repository later on - but not the packages. Another scenario where this can occur is that you installed a Debian package (.deb file) directly using the 'dpkg' command.
+On Ubuntu and (similarily) Debian systems, some events [1] may lead to a situation where packages are installed but in an untracked state, without an upgrade path. These can be orphaned packages (in the way deborphan defines them) but also package versions which are not from known sources, which (not just) I call 'foreign packages'. Your system may be unaware of this situation, and thus may not inform you about this issue.
 
-To install dependencies (required):
+As a result, systems may have packages and (moreover) package versions installed which have no upgrade path, lack security support, and therefore pose a security risk.
+
+foreign_packages uses the apt-show-versions utility to try to identify such packages. It is therefore a complementary tool to other utilities such as:
+- apt(-get) (--purge) autoremove
+- deborphan
+- ubuntu-support-status --show-unsupported (Ubuntu only)
+- debsecan (Debian only)
+
+
+Installation:
 
 ```
-sudo apt install -qq apt-show-versions
-```
-
-To and run install this script:
-
-```
+sudo apt update &&\
+sudo apt install -y apt-show-versions &&\
 wget -q https://raw.githubusercontent.com/tomreyn/scripts/master/foreign_packages
+# You may now want to review the source code: less foreign_packages
 chmod +x foreign_packages
-echo
+```
+
+Running (will take some time to compute, can be minutes on slow systems):
+```
 ./foreign_packages
 ```
 
-To remove the script and uninstall dependencies:
+Deinstallation:
 
 ```
 rm ./foreign_packages
 sudo apt purge -qq apt-show-versions
 ```
+
+[1] These events are:
+- upon removal of a PPA or third party APT source, packages installed from there are not removed or downgraded to versions Ubuntu supports
+- instead of from an APT repository (the recommended way), packages were installed directly from a package file (.deb) using e.g. 'dpkg --install /path/to/package.deb' or 'apt(-get) install /path/to/package.deb'
+- packages which were installed from official sources before a release upgrade may have been removed (or renamed) in the newer release and may remain installed in their old state (both Ubuntu and Debia have mechanisms in place which are meant to prevent this from occurring, but they may not always succeed)
+
 
 ## rescan_scsi
 

@@ -12,11 +12,14 @@ then
 fi
 /usr/bin/apt-get update --quiet=2 --download-only
 FOREIGN=$(tempfile --prefix=fopa_)
-/usr/bin/apt-show-versions | grep -Ev ' (uptodate|not installed)$' > $FOREIGN
+/usr/bin/apt-show-versions | grep -Ev ' (uptodate|not installed|upgradeable to .*)$' > $FOREIGN
 if [ -e $FOREIGN ]
 then
-  echo 'Packages / package versions which are installed but of unknown origin:'
-  cat $FOREIGN
+  echo '[ No available version in archive ]'
+  awk -F' ' '/: No available version in archive$/ {print $1" (version "$2")"}' $FOREIGN
+  echo
+  echo '[ Newer than version in archive ]'
+  awk -F' ' '/ newer than version in archive$/ {print $1" (version "$2")"}' $FOREIGN
 else
   echo 'Note: No packages / package versions of unknown origin were found' >&2
 fi
