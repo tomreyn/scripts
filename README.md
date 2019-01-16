@@ -71,6 +71,9 @@ A simplistic (no error handling) script to determine Ubuntu archive mirrors supp
 A shell script for Ubuntu to download .deb packaged mainline kernel images. This is written by TJ, thanks a lot for sharing!
 Source: http://iam.tj/projects/ubuntu/wget_kernel_mainline.sh
 
+## whoopsie_reports
+
+A shell script for Ubuntu to load reports your system submitted to errors.ubuntu.com in a web browser.
 
 # Contact
 

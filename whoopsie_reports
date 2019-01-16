@@ -1,0 +1,11 @@
+#!/bin/bash
+
+whoopsie_id_is_empty () {
+  echo 'ERROR: Whoopsie-ID is empty, bailing.' >&2 &&
+  exit 1
+}
+
+echo 'Note: You may now be asked to authenticate to access your whoopsie ID.'
+WHOOPSIE_ID=$(sudo cat /var/lib/whoopsie/whoopsie-id)
+[[ "$WHOOPSIE_ID" != '' ]] || whoopsie_id_is_empty
+x-www-browser https://errors.ubuntu.com/user/$WHOOPSIE_ID
