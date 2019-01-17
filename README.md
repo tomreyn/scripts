@@ -2,6 +2,8 @@
 
 These are just a few scripts which may seem worth retaining.
 
+Unless where indicated otherwise, everything is under my copyright, licensed under GPLv3.
+
 ## align_check
 
 A shell script to check partition alignment on a given partitioned block device (such as /dev/sda).
@@ -23,10 +25,10 @@ On Ubuntu and (similarily) Debian systems, some events<sup>1</sup> may lead to a
 As a result, systems may have packages and (moreover) package versions installed which have no upgrade path, lack security support, and therefore pose a security risk.
 
 foreign_packages uses the apt-show-versions utility to try to identify such packages. It is therefore a complementary tool to other utilities such as:
-- apt(-get) (--purge) autoremove
-- deborphan
-- ubuntu-support-status --show-unsupported (Ubuntu only)
-- debsecan (Debian only)
+- `apt-get autoremove` (consider adding `--purge`)
+- `deborphan`
+- `ubuntu-support-status --show-unsupported` (Ubuntu only)
+- `debsecan` (Debian only)
 
 
 Installation:
@@ -57,7 +59,6 @@ sudo apt purge -qq apt-show-versions
 - instead of from an APT repository (the recommended way), packages were installed directly from a package file (.deb) using e.g. 'dpkg --install /path/to/package.deb' or 'apt(-get) install /path/to/package.deb'
 - packages which were installed from official sources before a release upgrade may have been removed (or renamed) in the newer release and may remain installed in their old state (both Ubuntu and Debia have mechanisms in place which are meant to prevent this from occurring, but they may not always succeed)
 
-
 ## rescan_scsi
 
 (Re-)scan the entire SCSI bus to detect device changes. Can be useful to warm-plug storage devices.
@@ -68,7 +69,7 @@ A simplistic (no error handling) script to determine Ubuntu archive mirrors supp
 
 ## wget_kernel_mainline.sh
 
-A shell script for Ubuntu to download .deb packaged mainline kernel images. This is written by TJ, thanks a lot for sharing!
+A shell script for Ubuntu to download .deb packaged mainline kernel images. This is written (+copyright) by TJ, thanks a lot for sharing!
 Source: http://iam.tj/projects/ubuntu/wget_kernel_mainline.sh
 
 ## whoopsie_reports
