@@ -59,6 +59,12 @@ sudo apt purge -qq apt-show-versions
 - instead of from an APT repository (the recommended way), packages were installed directly from a package file (.deb) using e.g. 'dpkg --install /path/to/package.deb' or 'apt(-get) install /path/to/package.deb'
 - packages which were installed from official sources before a release upgrade may have been removed (or renamed) in the newer release and may remain installed in their old state (both Ubuntu and Debia have mechanisms in place which are meant to prevent this from occurring, but they may not always succeed)
 
+## grub_menuentry_ids
+
+If you need to boot into a specific kernel image using grub-set-default (to permanently set the menu entry to boot) or grub-reboot (to reboot into a given menu entry instantly), specifying the menu entry to boot can turn out to be difficult due to the use of submenus. This script helps, listing both the friendly names (as provided on the Grub menu) and their corresponding menu IDs, which can be passed to either command.
+
+This is only tested on Ubuntu.
+
 ## rescan_scsi
 
 (Re-)scan the entire SCSI bus to detect device changes. Can be useful to warm-plug storage devices.
