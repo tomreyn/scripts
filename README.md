@@ -34,10 +34,14 @@ foreign_packages uses the apt-show-versions utility to try to identify such pack
 Installation:
 
 ```
-sudo apt update &&\
-sudo apt install -y apt-show-versions &&\
+sudo /bin/true
+
+sudo apt update && \
+sudo apt install -y apt-show-versions && \
 wget -q https://raw.githubusercontent.com/tomreyn/scripts/master/foreign_packages
-# You may now want to review the source code: less foreign_packages
+# For security reasons, you should now review the script source code, running:
+#   less foreign_packages
+# Finally, make it runnable:
 chmod +x foreign_packages
 ```
 
