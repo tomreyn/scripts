@@ -1,0 +1,17 @@
+#!/bin/bash
+echo 'Calculating end of support for: '
+echo '  '"$(lsb_release -ds)"
+echo
+echo 'Standard support: '
+echo '  '"$(distro-info --days=eol --series $(lsb_release -cs))"' days remain'
+lsb_release -ds | grep -q 'LTS$' && (
+  echo
+  echo 'Extended support maintenance / ESM: '
+  echo '  '"$(distro-info --days=eol-esm --series $(lsb_release -cs))"' days remain'
+)
+echo
+echo 'Notes:'
+echo '  - Negative values indicate expired support periods'
+echo '  - ESM support requires an activated subscription and system configuration, see https://ubuntu.com/esm'
+echo '  - Support periods of Ubuntu flavours (https://ubuntu.com/download/flavours) may deviate, see https://help.ubuntu.com/community/EOL'
+echo '  - Please run "ubuntu-support-status" for a more detailed support overview'

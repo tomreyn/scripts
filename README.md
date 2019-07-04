@@ -14,9 +14,9 @@ Requires sudo, parted
 
 A shell script to report whether a given list of CVE IDs need yet to be handled (for the given Ubuntu release codename) by the Ubuntu security team. Crude and likely broken, don't rely on it.
 
-## ips_for_fqdn
+## eol
 
-A shell script to list information on a given fully qualified domain name, such as its authoritative nameservers and IP addresses it resolves to.
+A shell script to examine the remaining support lifetime of the current Ubuntu ionstallation.
 
 ## foreign_packages
 
@@ -68,6 +68,10 @@ sudo apt purge -qq apt-show-versions
 If you need to boot into a specific kernel image using grub-set-default (to permanently set the menu entry to boot) or grub-reboot (to reboot into a given menu entry instantly), specifying the menu entry to boot can turn out to be difficult due to the use of submenus. This script helps, listing both the friendly names (as provided on the Grub menu) and their corresponding menu IDs, which can be passed to either command.
 
 This is only tested on Ubuntu.
+
+## ips_for_fqdn
+
+A shell script to list information on a given fully qualified domain name, such as its authoritative nameservers and IP addresses it resolves to.
 
 ## rescan_scsi
 
