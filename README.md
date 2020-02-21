@@ -81,6 +81,10 @@ A shell script to list information on a given fully qualified domain name, such 
 
 A simplistic (no error handling) script to determine Ubuntu archive mirrors supporting HTTPS
 
+## ubuntu_cdmirrors_https
+
+A simplistic (no error handling) script to determine Ubuntu CD (ISO/release) mirrors supporting HTTPS
+
 ## wget_kernel_mainline.sh
 
 A shell script for Ubuntu to download .deb packaged mainline kernel images. This is written (+copyright) by TJ, thanks a lot for sharing!
