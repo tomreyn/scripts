@@ -10,6 +10,18 @@ A shell script to check partition alignment on a given partitioned block device 
 
 Requires sudo, parted
 
+## check_mirrors_headers_at_url
+
+A shell script to determine mirror servers the hostname in a given URL resolves to and print select HTTP response header lines for each.
+
+Requires dig
+
+## check_mirrors_speed_at_url
+
+A shell script to determine mirror servers the hostname in a given URL resolves to and test download speeds for the given URL on each mirror.
+
+Requires dig
+
 ## cve_states
 
 A shell script to report whether a given list of CVE IDs need yet to be handled (for the given Ubuntu release codename) by the Ubuntu security team. Crude and likely broken, don't rely on it.

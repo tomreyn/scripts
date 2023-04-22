@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# For the given URL, check when each mirrors' copy was last modified
+
+URL=$1
+if [ "x$URL" = "x" ];
+then
+  echo "Usage: $(basename $0) <URL>"
+  echo ''
+  echo 'URL should point to a file download.'
+  echo ''
+  echo 'Example:'
+  echo "  $(basename $0) http://ftp.us.debian.org/debian/dists/Debian11.3/main/binary-all/Packages.xz"
+  exit 1
+fi
+
+FQDN=$(echo "$URL" | sed -E 's;^https?://([^/:]*)[:/].*;\1;i')
+
+# Get list of IP addresses (omitting CNAMEs) and add square brackets around IPV6 IP addresses
+IPS=($(dig -t A $FQDN +short | grep -Ev '^[a-zA-Z]'; dig -t AAAA $FQDN +short | grep -Ev '^[a-zA-Z]' | xargs -I '{}' echo '[{}]'))
+
+echo "Testing ${#IPS[@]} mirrors for URL: $URL"
+echo
+
+for IP in ${IPS[@]}
+do
+  #echo "IP: $IP"
+  curl -s -w 'Server %{remote_ip}:%{remote_port}\n\tconnect attempts: %{num_connects}\n\thttp status: %{http_code}\n\ttime until name lookup: %{time_namelookup}s\tconnect: %{time_connect}s\tappconnect: %{time_appconnect}s\tpretransfer: %{time_pretransfer}s\tstarttransfer: %{time_starttransfer}s\ttotal: %{time_total}s\n\trequest size (header): %{size_request}B\trequest size (body): %{size_upload}B\n\tresponse size (header): %{size_header}B\tresponse size (body): %{size_download}B\n\tspeed average upload: %{speed_upload}B/s\tdownload: %{speed_download}B/s\n\n' --resolve $FQDN:80:$IP --resolve $FQDN:443:$IP $URL
+  echo
+done

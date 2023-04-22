@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# For the given URL, check when each mirrors' copy was last modified
+
+URL=$1
+if [ "x$URL" = "x" ];
+then
+  echo "Usage: $(basename $0) <URL>"
+  echo ''
+  echo 'URL should point to a file download.'
+  echo ''
+  echo 'Example:'
+  echo "  $(basename $0) http://ftp.us.debian.org/debian/dists/Debian11.3/main/binary-all/Packages.xz"
+  exit 1
+fi
+
+FQDN=$(echo "$URL" | sed -E 's;^https?://([^/:]*)[:/].*;\1;i')
+
+# Get list of IP addresses (omitting CNAMEs) and add square brackets around IPV6 IP addresses
+IPS=$(dig -t A $FQDN +short | grep -Ev '^[a-zA-Z]'; dig -t AAAA $FQDN +short | grep -Ev '^[a-zA-Z]' | xargs -I '{}' echo '[{}]')
+
+echo URL: $URL
+
+for IP in $IPS
+do
+  echo "  IP: $IP"
+  curl -sI --resolve $FQDN:80:$IP --resolve $FQDN:443:$IP $URL | grep -Ei --color=NEVER '^(HTTP|(Server|Last-Modified|Content-Type|Content-Length|Cache-Control|Expires|Etag|X-Cache-Status):)' | xargs -I '{}' echo '    {}'
+  echo
+done
