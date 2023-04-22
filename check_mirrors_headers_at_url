@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# For the given URL, check when each mirrors' copy was last modified
+# For the given URL, gather some response headers from a HEAD request against each mirror server
+# Example use case: Determine when each mirrors' copy of a file at the given URL was last modified
 
 URL=$1
 if [ "x$URL" = "x" ];
@@ -17,11 +18,12 @@ fi
 FQDN=$(echo "$URL" | sed -E 's;^https?://([^/:]*)[:/].*;\1;i')
 
 # Get list of IP addresses (omitting CNAMEs) and add square brackets around IPV6 IP addresses
-IPS=$(dig -t A $FQDN +short | grep -Ev '^[a-zA-Z]'; dig -t AAAA $FQDN +short | grep -Ev '^[a-zA-Z]' | xargs -I '{}' echo '[{}]')
+IPS=($(dig -t A $FQDN +short | grep -Ev '^[a-zA-Z]'; dig -t AAAA $FQDN +short | grep -Ev '^[a-zA-Z]' | xargs -I '{}' echo '[{}]'))
 
-echo URL: $URL
+echo "Testing ${#IPS[@]} mirrors for URL: $URL"
+echo
 
-for IP in $IPS
+for IP in ${IPS[@]}
 do
   echo "  IP: $IP"
   curl -sI --resolve $FQDN:80:$IP --resolve $FQDN:443:$IP $URL | grep -Ei --color=NEVER '^(HTTP|(Server|Last-Modified|Content-Type|Content-Length|Cache-Control|Expires|Etag|X-Cache-Status):)' | xargs -I '{}' echo '    {}'

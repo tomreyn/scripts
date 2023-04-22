@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# For the given URL, check when each mirrors' copy was last modified
+# Download what's at the given URL from each mirror server and gather download / HTTP request statistics for each
+# Example use case: Determine the bad mirror server that's responding slowly, or returning a 404 response, or the wrong file
 
 URL=$1
 if [ "x$URL" = "x" ];
