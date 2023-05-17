@@ -26,6 +26,6 @@ echo
 for IP in ${IPS[@]}
 do
   #echo "IP: $IP"
-  curl -s -w 'Server %{remote_ip}:%{remote_port}\n\tconnect attempts: %{num_connects}\n\thttp status: %{http_code}\n\ttime until name lookup: %{time_namelookup}s\tconnect: %{time_connect}s\tappconnect: %{time_appconnect}s\tpretransfer: %{time_pretransfer}s\tstarttransfer: %{time_starttransfer}s\ttotal: %{time_total}s\n\trequest size (header): %{size_request}B\trequest size (body): %{size_upload}B\n\tresponse size (header): %{size_header}B\tresponse size (body): %{size_download}B\n\tspeed average upload: %{speed_upload}B/s\tdownload: %{speed_download}B/s\n\n' --resolve $FQDN:80:$IP --resolve $FQDN:443:$IP $URL
+  curl -s -o /dev/null -w 'Server %{remote_ip}:%{remote_port}\n\tconnect attempts: %{num_connects}\n\thttp status: %{http_code}\n\ttime until name lookup: %{time_namelookup}s\tconnect: %{time_connect}s\tappconnect: %{time_appconnect}s\tpretransfer: %{time_pretransfer}s\tstarttransfer: %{time_starttransfer}s\ttotal: %{time_total}s\n\trequest size (header): %{size_request}B\trequest size (body): %{size_upload}B\n\tresponse size (header): %{size_header}B\tresponse size (body): %{size_download}B\n\tspeed average upload: %{speed_upload}B/s\tdownload: %{speed_download}B/s\n\n' --resolve $FQDN:80:$IP --resolve $FQDN:443:$IP $URL
   echo
 done
